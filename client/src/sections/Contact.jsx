@@ -8,6 +8,8 @@ function Contact() {
     message: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -18,8 +20,9 @@ function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
-      // Save to MongoDB through Render backend
       const response = await fetch(
         "https://portfolio-ram-pwit.onrender.com/api/contact",
         {
@@ -37,7 +40,6 @@ function Contact() {
         throw new Error(data.message);
       }
 
-      // Send email through EmailJS
       await emailjs.send(
         "service_9fowq3u",
         "template_oo73wz9",
@@ -56,8 +58,11 @@ function Contact() {
         email: "",
         message: "",
       });
+
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
       alert("Something went wrong!");
     }
   };
@@ -138,6 +143,7 @@ function Contact() {
 
           <button
             type="submit"
+            disabled={loading}
             className="
               px-8
               py-4
@@ -145,9 +151,12 @@ function Contact() {
               text-black
               rounded-xl
               font-semibold
+              min-w-[180px]
+              disabled:opacity-70
+              disabled:cursor-not-allowed
             "
           >
-            Send Message
+            {loading ? "⏳ Sending..." : "Send Message"}
           </button>
         </form>
       </div>
