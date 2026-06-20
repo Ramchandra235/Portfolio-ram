@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import emailjs from "@emailjs/browser";
 
 function Contact() {
@@ -20,8 +19,9 @@ function Contact() {
     e.preventDefault();
 
     try {
+      // Save to MongoDB through Render backend
       const response = await fetch(
-        "http://localhost:5000/api/contact",
+        "https://portfolio-ram-pwit.onrender.com/api/contact",
         {
           method: "POST",
           headers: {
@@ -31,29 +31,34 @@ function Contact() {
         }
       );
 
-     const data = await response.json();
+      const data = await response.json();
 
-await emailjs.send(
-  "service_9fowq3u",
-  "template_oo73wz9",
-  {
-    name: formData.name,
-    email: formData.email,
-    message: formData.message,
-  },
-  "7tG1Ma-6xLJotzpK1"
-);
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
 
-alert("Message sent successfully!");
+      // Send email through EmailJS
+      await emailjs.send(
+        "service_9fowq3u",
+        "template_oo73wz9",
+        {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        },
+        "7tG1Ma-6xLJotzpK1"
+      );
 
-setFormData({
-  name: "",
-  email: "",
-  message: "",
-});
+      alert("Message sent successfully!");
+
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+      });
     } catch (error) {
       console.error(error);
-      alert("Something went wrong");
+      alert("Something went wrong!");
     }
   };
 
@@ -63,7 +68,6 @@ setFormData({
       className="min-h-screen px-6 py-24"
     >
       <div className="max-w-4xl mx-auto">
-
         <p className="text-cyan-400 mb-4">
           CONTACT
         </p>
@@ -81,7 +85,6 @@ setFormData({
           onSubmit={handleSubmit}
           className="space-y-6"
         >
-
           <input
             type="text"
             name="name"
@@ -89,12 +92,12 @@ setFormData({
             onChange={handleChange}
             placeholder="Your Name"
             className="
-            w-full
-            bg-zinc-900
-            border
-            border-cyan-500/20
-            rounded-xl
-            p-4
+              w-full
+              bg-zinc-900
+              border
+              border-cyan-500/20
+              rounded-xl
+              p-4
             "
             required
           />
@@ -106,12 +109,12 @@ setFormData({
             onChange={handleChange}
             placeholder="Your Email"
             className="
-            w-full
-            bg-zinc-900
-            border
-            border-cyan-500/20
-            rounded-xl
-            p-4
+              w-full
+              bg-zinc-900
+              border
+              border-cyan-500/20
+              rounded-xl
+              p-4
             "
             required
           />
@@ -123,12 +126,12 @@ setFormData({
             onChange={handleChange}
             placeholder="Your Message"
             className="
-            w-full
-            bg-zinc-900
-            border
-            border-cyan-500/20
-            rounded-xl
-            p-4
+              w-full
+              bg-zinc-900
+              border
+              border-cyan-500/20
+              rounded-xl
+              p-4
             "
             required
           />
@@ -136,19 +139,17 @@ setFormData({
           <button
             type="submit"
             className="
-            px-8
-            py-4
-            bg-cyan-500
-            text-black
-            rounded-xl
-            font-semibold
+              px-8
+              py-4
+              bg-cyan-500
+              text-black
+              rounded-xl
+              font-semibold
             "
           >
             Send Message
           </button>
-
         </form>
-
       </div>
     </section>
   );
